@@ -89,7 +89,7 @@ flowchart LR
   style LOCAL fill:#ffffff,stroke:#666666,stroke-dasharray:5 5;
   style GCP fill:#faf6fc,stroke:#9673a6,stroke-dasharray:5 5;
 
-  linkStyle 7,8,14,17 stroke:#d79b00,stroke-width:3px,color:#8a5a00;
+  linkStyle 7,8,14,17 stroke:#d79b00,stroke-width:3px;
   linkStyle 2,16 stroke:#666666,stroke-dasharray:5 5;
 ```
 
