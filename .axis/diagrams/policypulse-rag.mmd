@@ -1,0 +1,86 @@
+%% PolicyPulse RAG: query path, ingestion path, and the ADC trust crossings into Vertex AI.
+%% Source state: working tree, no commit yet. Same nodes and edges as policypulse-rag.drawio.
+flowchart LR
+  subgraph LOCAL["LOCAL MACHINE"]
+    direction TB
+
+    subgraph QUERY["QUERY PATH (runs on every question)"]
+      direction LR
+      user(["1. User<br/>browser"])
+      runner["2. adk web / Runner<br/>FastAPI, localhost:8000"]
+      sessions[("Session store<br/>policypulse_rag/.adk/")]
+      agent["3. LlmAgent 'policypulse_rag'<br/>agent.py, instruction in prompts.py<br/>answers from returned chunks only"]
+      retr["4. PolicyDocsRetrieval<br/>subclass of ADK VertexAiRagRetrieval<br/>similarity_top_k=10<br/>vector_distance_threshold=0.6"]
+      answer["5. Answer contract<br/>inline citations such as [GDPR Art. 33(1)]<br/>otherwise exactly: 'The provided reference<br/>documents do not cover this topic.'"]
+    end
+
+    subgraph INGEST["INGESTION PATH: python scripts/ingest_corpus.py (safe to re-run)"]
+      direction LR
+      docs["1. docs/ (immutable raw layer)<br/>GDPR, HIPAA summary, NCSP 2013,<br/>Road Safety 2010 PDFs;<br/>Registration API spec (md or PDF,<br/>other system, not yet supplied)"]
+      extract["2. Extract text<br/>pypdf per page;<br/>markdown read as is"]
+      split["3. Per-document splitter<br/>citation blocks:<br/>label, breadcrumb, text"]
+      render["4. Render<br/>build/corpus/#lt;doc_id#gt;.md<br/>breadcrumb heading, Cite as: line,<br/>End of line per block"]
+      gate["5. Contract gate<br/>required labels present,<br/>block counts in range;<br/>failure stops the run before any cloud call"]
+      sync["6. Corpus sync<br/>find or create corpus;<br/>upload changed files<br/>#lt;doc_id#gt;__#lt;sha12#gt;.md, unchanged skipped;<br/>wait for ACTIVE"]
+      env[".env (repo root)<br/>RAG_CORPUS_RESOURCE_NAME,<br/>read by the agent at startup"]
+    end
+
+    subgraph EVAL["EVALUATION (optional)"]
+      eval["adk eval policypulse_rag<br/>eval/policypulse_evalset.json<br/>runs the 13 acceptance cases against the agent"]
+    end
+  end
+
+  subgraph GCP["GOOGLE CLOUD: VERTEX AI"]
+    direction TB
+    gemini["Gemini 2.5 Flash (Vertex AI)<br/>generateContent, region GOOGLE_CLOUD_LOCATION<br/>Gemini 2.5 Pro: env switch POLICYPULSE_MODEL"]
+    rag["Vertex AI RAG Engine<br/>RetrieveContexts, region RAG_LOCATION<br/>corpus policypulse-5docs-corpus, 5 documents<br/>embeddings text-embedding-005<br/>1024-token chunks, 200 overlap"]
+    judge["Vertex AI<br/>rubric-based judging of the 13 cases"]
+  end
+
+  legend["LEGEND<br/>Thick orange arrow labeled ADC = trust crossing from the local machine<br/>into Google Cloud, authenticated with Application Default Credentials, no key files.<br/>Thin arrow = data or control flow. Dashed = session storage or startup config read."]
+
+  %% Query path (edges 0 to 6)
+  user -->|"HTTP localhost:8000"| runner
+  runner -->|"streamed answer"| user
+  runner -.-|"sessions"| sessions
+  runner -->|"user message"| agent
+  agent -->|"cited answer or refusal"| runner
+  agent -->|"search_policy_documents(query)<br/>one to several calls per question"| retr
+  retr -->|"up to 10 chunk texts<br/>with Cite as: labels"| agent
+
+  %% ADC crossings (edges 7 and 8)
+  agent <==>|"ADC: generateContent request;<br/>function calls and answer text return"| gemini
+  retr <==>|"ADC: RetrieveContexts(query);<br/>chunks return"| rag
+
+  %% Ingestion path (edges 9 to 16)
+  docs -->|"files"| extract
+  extract -->|"page text"| split
+  split -->|"blocks"| render
+  render -->|"rendered md"| gate
+  gate -->|"gate passed"| sync
+  sync <==>|"ADC: upload changed files;<br/>corpus ACTIVE"| rag
+  sync -->|"writes corpus name"| env
+  env -.->|"read at startup"| retr
+
+  %% Evaluation (edge 17)
+  eval <==>|"ADC: rubric-based judging"| judge
+
+  classDef query fill:#dae8fc,stroke:#6c8ebf,color:#1a1a1a;
+  classDef ingest fill:#d5e8d4,stroke:#82b366,color:#1a1a1a;
+  classDef cloud fill:#e1d5e7,stroke:#9673a6,color:#1a1a1a;
+  classDef evalc fill:#fff2cc,stroke:#d6b656,color:#1a1a1a;
+  classDef note fill:#ffffff,stroke:#999999,color:#1a1a1a;
+  class user,runner,sessions,agent,retr,answer query;
+  class docs,extract,split,render,gate,sync,env ingest;
+  class gemini,rag,judge cloud;
+  class eval evalc;
+  class legend note;
+
+  style QUERY fill:#f5f9ff,stroke:#6c8ebf,stroke-dasharray:5 5;
+  style INGEST fill:#f6fbf4,stroke:#82b366,stroke-dasharray:5 5;
+  style EVAL fill:#fffbee,stroke:#d6b656,stroke-dasharray:5 5;
+  style LOCAL fill:#ffffff,stroke:#666666,stroke-dasharray:5 5;
+  style GCP fill:#faf6fc,stroke:#9673a6,stroke-dasharray:5 5;
+
+  linkStyle 7,8,14,17 stroke:#d79b00,stroke-width:3px,color:#8a5a00;
+  linkStyle 2,16 stroke:#666666,stroke-dasharray:5 5;

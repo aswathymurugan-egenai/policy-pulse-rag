@@ -1,0 +1,950 @@
+{
+  "eval_set_id": "policypulse_evalset",
+  "name": "PolicyPulse acceptance Q1-Q13",
+  "description": "The 13 acceptance questions. Each case expects at least one search_policy_documents call and is scored by per-case rubrics.",
+  "eval_cases": [
+    {
+      "eval_id": "q01_exact_duplicate_status",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q01_exact_duplicate_status_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "What status does the registration API return for an exact duplicate, and how is it detected?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "409 duplicate-customer. It's detected deterministically on normalized email first, then E.164 phone."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "registration API exact duplicate status code and detection"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q01_cites_api",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites the Registration API document in square brackets."
+          }
+        },
+        {
+          "rubric_id": "q01_status_409",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states that an exact duplicate returns HTTP 409 with duplicate-customer."
+          }
+        },
+        {
+          "rubric_id": "q01_detection_order",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says detection is deterministic, on normalized email first and then on E.164 phone."
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "q02_gemini_timeout_fallback",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q02_gemini_timeout_fallback_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "What happens if Gemini times out during fuzzy duplicate screening?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "After the 8 s timeout, the API falls back to deterministic only and still registers the customer (201 \"created, unscreened\", with a warning banner). The model can only flag a possible duplicate for review and never causes a hard rejection."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "fuzzy duplicate screening Gemini timeout fallback"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q02_cites_api",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites the Registration API document in square brackets."
+          }
+        },
+        {
+          "rubric_id": "q02_timeout_fallback",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states that after an 8 second timeout the API falls back to deterministic-only screening."
+          }
+        },
+        {
+          "rubric_id": "q02_still_registered",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states that the customer is still registered, with status 201 \"created, unscreened\" and a warning banner."
+          }
+        },
+        {
+          "rubric_id": "q02_no_hard_reject",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states that the model can only flag a possible duplicate for review and never causes a hard rejection."
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "q03_candidate_cap",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q03_candidate_cap_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "How many candidates go to Gemini per call, and why?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "At most 5. The cap limits tokens and the amount of PII sent to the model."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "maximum candidates sent to Gemini per fuzzy screening call"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q03_cites_api",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites the Registration API document in square brackets."
+          }
+        },
+        {
+          "rubric_id": "q03_cap_5",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states that at most 5 candidates go to Gemini per call."
+          }
+        },
+        {
+          "rubric_id": "q03_cap_reason",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response gives the reason: the cap limits the tokens and the amount of PII sent to the model."
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "q04_gdpr_breach_notification",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q04_gdpr_breach_notification_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "How quickly must a personal data breach be reported under GDPR?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Without undue delay and, where feasible, within 72 hours of becoming aware of it, to the supervisory authority. This doesn't apply if the breach is unlikely to put people's rights and freedoms at risk. A late notification must give reasons for the delay. [GDPR Art. 33(1)]"
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "GDPR personal data breach notification deadline to the supervisory authority"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q04_cites_art33",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites GDPR Article 33, paragraph 1, in square brackets."
+          }
+        },
+        {
+          "rubric_id": "q04_deadline",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says notification is due without undue delay and, where feasible, within 72 hours of becoming aware of the breach."
+          }
+        },
+        {
+          "rubric_id": "q04_authority",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says the notification goes to the supervisory authority."
+          }
+        },
+        {
+          "rubric_id": "q04_risk_exception",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says notification is not required when the breach is unlikely to result in a risk to the rights and freedoms of natural persons."
+          }
+        },
+        {
+          "rubric_id": "q04_late_reasons",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says a notification made after 72 hours must be accompanied by reasons for the delay."
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "q05_gdpr_max_fine",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q05_gdpr_max_fine_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "What is the maximum GDPR fine?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Up to €20 million or 4% of total worldwide annual turnover for the previous financial year, whichever is higher. [GDPR Art. 83(5)–(6)]"
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "GDPR maximum administrative fine"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q05_cites_art83",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites GDPR Article 83(5) or Article 83(6) in square brackets."
+          }
+        },
+        {
+          "rubric_id": "q05_amount",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states a maximum of 20 million euro, or 4% of total worldwide annual turnover of the preceding financial year for an undertaking."
+          }
+        },
+        {
+          "rubric_id": "q05_whichever_higher",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says the higher of the two amounts applies."
+          }
+        },
+        {
+          "rubric_id": "q05_not_lower_tier",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response does not present 10 million euro or 2% as the maximum fine."
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "q06_hipaa_minimum_necessary",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q06_hipaa_minimum_necessary_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "What is the \"minimum necessary\" principle under HIPAA?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Covered entities must make reasonable efforts to use, disclose and request only the minimum PHI needed for the purpose. It doesn't apply in some cases, such as disclosures to a provider for treatment or to the individual themselves. [HIPAA Privacy Rule Summary]"
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "HIPAA minimum necessary use and disclosure standard"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q06_cites_hipaa",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites the HIPAA Privacy Rule Summary in square brackets."
+          }
+        },
+        {
+          "rubric_id": "q06_standard",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says covered entities must make reasonable efforts to use, disclose and request only the minimum amount of protected health information needed for the purpose."
+          }
+        },
+        {
+          "rubric_id": "q06_exception",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response names at least one exception: disclosure to or a request by a health care provider for treatment, or disclosure to the individual who is the subject of the information."
+          }
+        },
+        {
+          "rubric_id": "q06_not_gdpr",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response does not attribute the minimum necessary standard to GDPR."
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "q07_hipaa_criminal_penalties",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q07_hipaa_criminal_penalties_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "What criminal penalties does HIPAA set for wrongful disclosure?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Knowingly obtaining or disclosing: up to $50,000 and 1 year in prison. Under false pretenses: $100,000 and 5 years. With intent to sell or use for commercial advantage, personal gain or malicious harm: $250,000 and 10 years. [HIPAA Privacy Rule Summary]"
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "HIPAA criminal penalties for wrongful disclosure"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q07_cites_hipaa",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites the HIPAA Privacy Rule Summary in square brackets."
+          }
+        },
+        {
+          "rubric_id": "q07_tier_knowing",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states a fine of $50,000 and up to one year of imprisonment for knowingly obtaining or disclosing health information."
+          }
+        },
+        {
+          "rubric_id": "q07_tier_pretenses",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states $100,000 and up to five years of imprisonment when the conduct involves false pretenses."
+          }
+        },
+        {
+          "rubric_id": "q07_tier_intent",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states $250,000 and up to ten years of imprisonment when the conduct involves intent to sell, transfer or use the information for commercial advantage, personal gain or malicious harm."
+          }
+        },
+        {
+          "rubric_id": "q07_not_civil",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response does not present civil money penalties as criminal penalties."
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "q08_ncsp_workforce_target",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q08_ncsp_workforce_target_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "What workforce target does India's National Cyber Security Policy 2013 set?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "500,000 skilled cyber security professionals within 5 years, through capacity building, skill development and training. [NCSP 2013, Objective 8]"
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "NCSP 2013 workforce target cyber security professionals"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q08_cites_objective8",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites NCSP 2013 Objective 8 in square brackets."
+          }
+        },
+        {
+          "rubric_id": "q08_target",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states a workforce of 500,000 professionals skilled in cyber security."
+          }
+        },
+        {
+          "rubric_id": "q08_timeframe",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states the target is to be reached within 5 years."
+          }
+        },
+        {
+          "rubric_id": "q08_means",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says the means are capacity building, skill development and training."
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "q09_ncsp_24x7_bodies",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q09_ncsp_24x7_bodies_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Which 24x7 bodies does the cyber security policy set up?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "CERT-In as the national nodal agency for cyber emergency response, sectoral CERTs, and NCIIPC for critical information infrastructure protection. [NCSP 2013, Strategies E & G]"
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "NCSP 2013 24x7 CERT-In sectoral CERTs NCIIPC"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q09_cites_strategies",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites NCSP 2013 Strategy E and Strategy G in square brackets."
+          }
+        },
+        {
+          "rubric_id": "q09_cert_in",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response names CERT-In as the 24x7 national nodal agency for cyber security emergency response and crisis management."
+          }
+        },
+        {
+          "rubric_id": "q09_sectoral_cert",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response names 24x7 sectoral CERTs."
+          }
+        },
+        {
+          "rubric_id": "q09_nciipc",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response names NCIIPC, the 24x7 National Critical Information Infrastructure Protection Centre, as the nodal agency for critical information infrastructure protection."
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "q10_road_safety_approval",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q10_road_safety_approval_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "When was the National Road Safety Policy approved, and on whose recommendation?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "The Union Cabinet approved it on 15 March 2010, based on the Sundar Committee (chaired by S. Sundar, former Secretary MoST), which reported in February 2007. [Road Safety Policy]"
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "National Road Safety Policy approval date and committee recommendation"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q10_cites_road_safety",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites the Road Safety Policy in square brackets."
+          }
+        },
+        {
+          "rubric_id": "q10_approval",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states that the Union Cabinet approved the policy on 15 March 2010 (the document writes the date as 15.03.2010)."
+          }
+        },
+        {
+          "rubric_id": "q10_committee",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says the approval was based on the recommendations of the Sundar Committee (the document spells it Sunder), chaired by S. Sundar, former Secretary MoST."
+          }
+        },
+        {
+          "rubric_id": "q10_report_date",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says the committee reported in February 2007."
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "q11_road_safety_funding",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q11_road_safety_funding_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "How will road safety activities be funded and overseen?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Through a National Road Safety Fund, financed by a share of the cess on petrol and diesel, with a National Road Safety Board overseeing implementation. [Road Safety Policy]"
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "National Road Safety Fund and Board funding and oversight"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q11_cites_road_safety",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites the Road Safety Policy in square brackets."
+          }
+        },
+        {
+          "rubric_id": "q11_fund",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response names a National Road Safety Fund."
+          }
+        },
+        {
+          "rubric_id": "q11_fund_source",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says the Fund is financed by a share of the cess on petrol and diesel (the document writes gasoline and diesel)."
+          }
+        },
+        {
+          "rubric_id": "q11_board",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says a National Road Safety Board oversees implementation."
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "q12_cross_doc_data_limits",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q12_cross_doc_data_limits_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Our registration API sends customer data to Gemini. What in these docs supports limiting what we send?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Several documents support limiting what the API sends. The Registration API caps fuzzy-screening candidates at 5 per Gemini call and sends only a minimized screening profile [Registration API]. GDPR requires personal data to be adequate, relevant and limited to what is necessary (data minimisation) [GDPR Art. 5(1)(c)]. If health data is involved, HIPAA's minimum necessary standard limits uses and disclosures of PHI to the minimum needed [HIPAA Privacy Rule Summary]. NCSP 2013 Objective 10 calls for protecting information while in process, handling, storage and transit [NCSP 2013, Objective 10]."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "Registration API data sent to Gemini candidate cap and minimized screening profile"
+                }
+              },
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "data minimisation and minimum necessary principles"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q12_cites_api",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites the Registration API for the cap of 5 candidates and for sending only a minimized screening profile."
+          }
+        },
+        {
+          "rubric_id": "q12_cites_gdpr",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites GDPR Article 5(1)(c) for data minimisation."
+          }
+        },
+        {
+          "rubric_id": "q12_cites_hipaa",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response mentions HIPAA's minimum necessary standard, framed as applying if health data is involved, and cites the HIPAA Privacy Rule Summary."
+          }
+        },
+        {
+          "rubric_id": "q12_cites_ncsp",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response cites NCSP 2013 Objective 10 for protecting information in process, handling, storage and transit."
+          }
+        },
+        {
+          "rubric_id": "q12_per_source",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response attributes each point to its own document and does not mix up the sources."
+          }
+        },
+        {
+          "rubric_id": "q12_verbatim_expectation",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The answer combines and cites: the API caps candidates at 5 and sends only a minimized screening profile [Registration API]; GDPR data minimisation [Art. 5(1)(c)]; HIPAA \"minimum necessary\" if health data is involved; NCSP Objective 10 on protecting data in process, storage and transit."
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "q13_out_of_scope_speed_limit",
+      "session_input": {
+        "app_name": "policypulse_rag",
+        "user_id": "eval_user",
+        "state": {}
+      },
+      "conversation": [
+        {
+          "invocation_id": "q13_out_of_scope_speed_limit_turn1",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "What is the speed limit on Indian national highways?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "The provided reference documents do not cover this topic."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_policy_documents",
+                "args": {
+                  "query": "speed limit on Indian national highways"
+                }
+              }
+            ],
+            "tool_responses": [],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "rubrics": [
+        {
+          "rubric_id": "q13_says_not_covered",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response says the provided reference documents do not cover this topic."
+          }
+        },
+        {
+          "rubric_id": "q13_no_number",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response states no speed value and no other number."
+          }
+        },
+        {
+          "rubric_id": "q13_no_general_knowledge",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The response offers no answer drawn from general knowledge."
+          }
+        },
+        {
+          "rubric_id": "q13_verbatim_expectation",
+          "type": "FINAL_RESPONSE_QUALITY",
+          "rubric_content": {
+            "text_property": "The agent should say the documents don't cover this. It must not guess."
+          }
+        }
+      ]
+    }
+  ]
+}

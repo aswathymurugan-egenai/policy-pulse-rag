@@ -1,0 +1,81 @@
+Page 1 of 9 
+National Cyber Security Policy -2013
+
+Preamble 
+ 
+1. Cyberspace1 is a complex environment consisting of interactions between people, software and 
+services, supported by worldwide distribution of information and communication technology (ICT) 
+devices and networks.  
+ 
+2. Owing to the numerous benefits brought about by technological advancements, the cyberspace 
+today is a common pool used by citizens, businesses, critical information infrastructure, military and 
+governments in a manner that makes it difficult to draw clear boundaries among these different 
+groups. The cyberspace is expected to be more complex in the foreseeable future, with many fold 
+increase in networks and devices connected to it.  
+ 
+                                                           
+1ISO / IEC 27032-2012
+
+=====PAGE BREAK=====
+Page 3 of 9 
+I. Vision 
+To build a secure and resilient cyberspace for citizens, businesses and 
+Government 
+II. Mission 
+To protect information and information infrastructure in cyberspace, build capabilities to 
+prevent and respond to cyber threats, reduce vulnerabilities and minimize damage from 
+cyber incidents through a combination of institutional structures, people, processes, 
+technology and cooperation. 
+III. Objectives 
+7) To improve visibility of the integrity of ICT products and services by establishing 
+infrastructure for testing & validation of security of such products.
+
+=====PAGE BREAK=====
+Page 4 of 9 
+ 
+8) To create a workforce of 500,000 professionals skilled in cyber security in the next 5 
+years through capacity building, skill development and training. 
+9) To provide fiscal benefits to businesses for adoption of standard security practices and 
+processes. 
+10) To enable protection of information while in process, handling, storage & transit so as to 
+safeguard privacy of citizen's data and for reducing economic losses due to cyber crime 
+or data theft. 
+IV. Strategies
+
+=====PAGE BREAK=====
+Page 6 of 9 
+E. Creating mechanisms for security threat early warning, vulnerability management and 
+response to security threats 
+1) To create National level systems, processes, structures and mechanisms to generate 
+necessary situational scenario of existing and potential cyber security threats and 
+enable timely information sharing for proactive, preventive and protective actions by 
+individual entities.  
+2) To operate a 24x7 National Level Computer Emergency Response Team (CERT-In) 
+to function as a Nodal Agency for coordination of all efforts for cyber security 
+emergency response and crisis management. CERT-In will function as an umbrella 
+organization in enabling creation and operationalization of sectoral CERTs as well as 
+facilitating communication and coordination actions in dealing with cyber crisis 
+situations.
+
+=====PAGE BREAK=====
+Page 7 of 9 
+G. Protection and resilience of Critical Information Infrastructure 
+1) To develop a plan for protection of Critical Information Infrastructure and its 
+integration with business plan at the entity level and implement such plan. The plans 
+shall include establishing mechanisms for secure information flow (while in process, 
+handling, storage & transit), guidelines and standards, crisis management plan, 
+proactive security posture assessment and forensically enabled information 
+infrastructure. 
+2) To Operate a 24x7 National Critical Information Infrastructure Protection Centre 
+(NCIIPC) to function as the nodal agency for critical information infrastructure 
+protection in the country.
+
+=====PAGE BREAK=====
+Page 9 of 9 
+N. Prioritized approach for implementation 
+To adopt a prioritized approach to implement the policy so as to address the most 
+critical areas in the first instance. 
+V. Operationalisation of the Policy  
+This policy shall be operationalised by way of detailed guidelines and plans of action at 
+various levels such as national, sectoral, state, ministry, department and enterprise, as may 
+be appropriate, to address the challenging requirements of security of the cyberspace.
